@@ -20,3 +20,6 @@ def get_exchange_rate(base_currency="USD", target_currency="EUR"):
 def save_to_supabase(data):
     response = supabase.table("exchange_rates").insert(data).execute()
     return response
+
+#Interfaz con Streamlit
+st.title("Consulta y Registro de Tipo de Cambio")
