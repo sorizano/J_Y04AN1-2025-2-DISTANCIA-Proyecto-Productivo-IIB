@@ -13,14 +13,16 @@ def get_exchange_rate(base_currency="USD", target_currency="EUR"):
     ticker = yf.Ticker(pair)
     data = ticker.history(period="1d")
     if not data.empty:
-        return {"rate": data["Close"].iloc[-1]}  # Toma el precio de cierre más reciente
+        rate = data["Close"].iloc[-1]  # Acceso correcto al precio de cierre más reciente
+        return {"rate": rate}
     else:
         return {"error": "No se pudo obtener el tipo de cambio"}
 
 # Guardar los datos en Supabase
 def save_to_supabase(data):
+    print(f"Datos enviados a Supabase: {data}")  # Depuración
     response = supabase.table("exchange_rates").insert(data).execute()
-    print(response)
+    print(f"Respuesta de Supabase: {response}")  # Depuración
     return response
 
 # Interfaz con Streamlit
@@ -50,7 +52,7 @@ if st.button("Consultar Tipo de Cambio"):
                 "comment": comment,
             }
             response = save_to_supabase(data_to_save)
-            if response.status_code == 201:
+            if response.status_code == 200 and not response.get("error"):
                 st.success("Datos guardados exitosamente en Supabase.")
             else:
-                st.error("Error al guardar los datos en Supabase.")
+                st.error(f"Error al guardar los datos en Supabase: {response}")
