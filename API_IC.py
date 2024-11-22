@@ -63,7 +63,8 @@ if st.button("Consultar Tipo de Cambio"):
                 "comment": comment,
             }
             response = save_to_supabase(data_to_save)
-            if response.status_code == 200 and not response.get("error"):
-                st.success("Datos guardados exitosamente en Supabase.")
+            
+            if "error" in response:
+                st.error(f"Error al guardar los datos en supabase: {response['error']}")
             else:
-                st.error(f"Error al guardar los datos en Supabase: {response}")
+                st.success("Datps guardados exitosamente en Supabase")
