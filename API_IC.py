@@ -13,7 +13,7 @@ def get_exchange_rate(base_currency="USD", target_currency="EUR"):
     ticker = yf.Ticker(pair)
     data = ticker.history(period="1d")
     if not data.empty:
-        return {"rate": data["Close"][-1]}  # Toma el precio de cierre más reciente
+        return {"rate": data["Close"].iloc[-1]}  # Toma el precio de cierre más reciente
     else:
         return {"error": "No se pudo obtener el tipo de cambio"}
 
