@@ -1,5 +1,5 @@
 import streamlit as st
-import yfinace as yf
+import yfinance as yf
 from supabase import create_client, Client
 
 #Configuración de la conexión a Supabase
