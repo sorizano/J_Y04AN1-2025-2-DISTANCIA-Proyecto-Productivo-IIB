@@ -23,10 +23,18 @@ def get_exchange_rate(base_currency="USD", target_currency="EUR"):
 
 # Guardar los datos en Supabase
 def save_to_supabase(data):
-    print(f"Datos enviados a Supabase: {data}")  # Depuración
-    response = supabase.table("exchange_rates").insert(data).execute()
-    print(f"Respuesta de Supabase: {response}")  # Depuración
-    return response
+    try:
+        # Imprimir los datos enviados a Supabase para ver qué se envía realmente
+        print("Datos enviados a Supabase:", data)
+        response = supabase.table("exchange_rates").insert(data).execute()
+        
+        # Verificar la respuesta del API de Supabase
+        print("Respuesta de Supabase:", response)
+        return response
+    except Exception as e:
+        print("Error al guardar en Supabase:", str(e))
+        return {"error": str(e)}
+
 
 # Interfaz con Streamlit
 st.title("Consulta y Registro de Tipo de Cambio")
