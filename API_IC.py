@@ -1,5 +1,5 @@
 import streamlit as st
-import requests
+import yfinace as yf
 from supabase import create_client, Client
 
 #Configuración de la conexión a Supabase
@@ -7,14 +7,15 @@ SUPABASE_URL = "https://pbsjxezvcmdlwusveukd.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBic2p4ZXp2Y21kbHd1c3ZldWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY1MzYxMjgsImV4cCI6MjA0MjExMjEyOH0.LPj5kYWsWQ-wfLry8FBTpXiJxUUVI5qNCTL2CBKMxYY"
 supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 
-#Consumir el API de tipo de cambio
+#Consumir el API de Yahoo finance 
 def get_exchange_rate(base_currency="USD", target_currency="EUR"):
-    url = f"https://api.exchangerate.host/latest?base={base_currency}&symbols={target_currency}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
+    pair = f"{base_currency}{target_currency}=X"
+    ticker = yf.Ticker(pair)
+    data = ticker.history(period="1d")
+    if not data.empty:
+        return {"rate":data["Close"][-1]} #Tomando el precio de cierre más reciente
     else:
-        return {"error":"No se puede conectar al API"}
+        return {"error":"No se pudo obtener el tipo de cambio"}
 
 #Guardar los datos en Supabase
 def save_to_supabase(data):
